@@ -5,13 +5,12 @@ from collections import defaultdict
 import yeelight
 
 DEVICES_MACS = {
-    "XXXXX": "Omer's iPhone",
-    "XXXXX": "Omer's iPhone",
+    "XXXXXXXX": "Omer's iPhone",
+    "XXXXXXXX": "Omer's iPhone",
 }
 
 DEVICE_LAST_SEEN_DICT = defaultdict(lambda: {"time": 0, "connected": False})
 LAST_SEEN_TIME_THRESHOLD_MINTURES = 20
-
 
 def get_ip_by_mac(mac_to_search: str) -> str:
     ans = subprocess.check_output("arp -a", shell=True).decode().upper()
@@ -52,8 +51,14 @@ def turn_off_lights():
         bulb.turn_off()
 
 
+def turn_on_lights():
+    for bulb in get_yeelight_bulbs():
+        bulb.turn_on()
+
+
 def main():
     print("Starting...")
+    lights_on = False
     while True:
         for mac in DEVICES_MACS:
             ip = get_ip_by_mac(mac)
@@ -64,13 +69,20 @@ def main():
                     print("{} is Connected".format(DEVICES_MACS[mac]))
                     DEVICE_LAST_SEEN_DICT[mac]["connected"] = True
 
+                if not lights_on:
+                    turn_on_lights()
+                    print("Lights are on")
+                    lights_on = True
+
             else:
                 if mac in DEVICE_LAST_SEEN_DICT:
                     print("{} was last seen at {}".format(
                         DEVICES_MACS[mac], time.ctime(DEVICE_LAST_SEEN_DICT[mac]["time"])))
                     DEVICE_LAST_SEEN_DICT[mac]["connected"] = False
-                    if time.time() - DEVICE_LAST_SEEN_DICT[mac]["time"] > 60 * LAST_SEEN_TIME_THRESHOLD_MINTURES:
+                    if lights_on and time.time() - DEVICE_LAST_SEEN_DICT[mac]["time"] > 60 * LAST_SEEN_TIME_THRESHOLD_MINTURES:
+                        print("Turn off the lights")
                         turn_off_lights()
+                        lights_on = False
         time.sleep(1)
 
 
