@@ -5,12 +5,17 @@ from collections import defaultdict
 import yeelight
 
 DEVICES_MACS = {
-    "XXXXXXXX": "Omer's iPhone",
-    "XXXXXXXX": "Omer's iPhone",
+    "6E:FD:4C:21:26:59": "Omer's iPhone",
+    "E2:EA:93:C8:F5:99": "Omer's iPhone",
 }
 
 DEVICE_LAST_SEEN_DICT = defaultdict(lambda: {"time": 0, "connected": False})
 LAST_SEEN_TIME_THRESHOLD_MINTURES = 20
+
+
+def refresh_arp_table():
+    subprocess.call("ping 192.168.0.255 -c 1", shell=True)
+
 
 def get_ip_by_mac(mac_to_search: str) -> str:
     ans = subprocess.check_output("arp -a", shell=True).decode().upper()
@@ -61,6 +66,7 @@ def main():
     lights_on = False
     while True:
         for mac in DEVICES_MACS:
+            refresh_arp_table()
             ip = get_ip_by_mac(mac)
 
             if ip and ping_ip(ip):
@@ -83,7 +89,7 @@ def main():
                         print("Turn off the lights")
                         turn_off_lights()
                         lights_on = False
-        time.sleep(1)
+        time.sleep(2)
 
 
 if __name__ == "__main__":
