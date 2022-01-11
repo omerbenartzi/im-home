@@ -5,8 +5,8 @@ from collections import defaultdict
 import yeelight
 
 DEVICES_MACS = {
-    "6E:FD:4C:21:26:59": "Omer's iPhone",
-    "E2:EA:93:C8:F5:99": "Omer's iPhone",
+    "XXXXXX": "Omer's iPhone",
+    "XXXXXX": "Omer's iPhone",
 }
 
 DEVICE_LAST_SEEN_DICT = defaultdict(lambda: {"time": 0, "connected": False})
@@ -14,7 +14,7 @@ LAST_SEEN_TIME_THRESHOLD_MINTURES = 20
 
 
 def refresh_arp_table():
-    subprocess.call("ping 192.168.0.255 -c 1", shell=True)
+    subprocess.check_output("ping 192.168.0.255 -c 1", shell=True)
 
 
 def get_ip_by_mac(mac_to_search: str) -> str:
