@@ -5,8 +5,8 @@ from collections import defaultdict
 import yeelight
 
 DEVICES_MACS = {
-    "XXXXXX": "Omer's iPhone",
-    "XXXXXX": "Omer's iPhone",
+    "XXXXXXX": "Omer's iPhone",
+    "XXXXXXX": "Omer's iPhone",
 }
 
 DEVICE_LAST_SEEN_DICT = defaultdict(lambda: {"time": 0, "connected": False})
@@ -75,10 +75,10 @@ def main():
                     print("{} is Connected".format(DEVICES_MACS[mac]))
                     DEVICE_LAST_SEEN_DICT[mac]["connected"] = True
 
-                if not lights_on:
-                    turn_on_lights()
-                    print("Lights are on")
-                    lights_on = True
+                    if not lights_on:
+                        turn_on_lights()
+                        print("Lights are on")
+                        lights_on = True
 
             else:
                 if mac in DEVICE_LAST_SEEN_DICT:
@@ -89,7 +89,7 @@ def main():
                         print("Turn off the lights")
                         turn_off_lights()
                         lights_on = False
-        time.sleep(2)
+        time.sleep(10)
 
 
 if __name__ == "__main__":
